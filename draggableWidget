@@ -1,0 +1,60 @@
+// ignore_for_file: must_be_immutable
+
+import 'package:draggable_fab/draggable_fab.dart';
+import 'package:flutter/material.dart';
+
+import 'Color.dart';
+
+var globalKey = GlobalKey<_CustomFloatState>();
+
+class CustomFloat extends StatefulWidget {
+  CustomFloat(
+      {Key? key,
+      required this.firstChild,
+      this.customColor,
+      this.bottomPad,
+      this.fromTube = false,
+      this.bottom})
+      : super(key: key);
+  final Widget firstChild;
+  Widget? bottom;
+  Color? customColor;
+  double? bottomPad;
+  bool? fromTube;
+
+  @override
+  _CustomFloatState createState() => _CustomFloatState();
+}
+
+class _CustomFloatState extends State<CustomFloat> {
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      children: [
+        widget.firstChild,
+        DraggableFab(
+          securityBottom: widget.bottomPad ?? 60,
+          initPosition: offset,
+          onChanged: (offsets) {
+            offset = offsets;
+          },
+          child: GestureDetector(
+            onTap: () {
+              Get.toNamed(Routes.personalProfileSelection);
+            },
+            child: CircleAvatar(
+              radius: 25,
+              backgroundColor: widget.customColor ?? DynamicColors.primaryColor,
+              child: Icon(
+                Icons.home,
+                color: DynamicColors.whiteColor,
+              ),
+            ),
+          ),
+        ),
+      ],
+      // ),
+      // bottomNavigationBar: fromTube! ? bottom : Container(),
+    );
+  }
+}
