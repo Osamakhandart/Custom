@@ -1,0 +1,56 @@
+import 'package:intl/intl.dart';
+
+getTimeMethod(String dateTime) {
+  DateTime date = DateTime.now();
+  String? today;
+  String? times;
+  final DateFormat formatter = DateFormat('yy/MM/dd');
+  final DateFormat timeFormatter = DateFormat('hh:mm aa');
+  DateTime d = DateTime.parse(dateTime);
+  var difference = DateOnlyCompare(date).isSameDate(d);
+  if (difference == false) {
+    var time = d.difference(date).inDays;
+    var min = d.difference(date).inMinutes;
+    if (time == 0) {
+      times = timeFormatter.format(DateTime.parse(dateTime));
+      today = "Yesterday";
+
+      return today;
+    } else if (time <= -1 && time > -364) {
+      time = time * -1;
+      times = timeFormatter.format(DateTime.parse(dateTime));
+      if (time == 1) {
+        today = "$time day ago";
+      } else {
+        today = "$time days ago";
+      }
+      return today;
+    } else if (time < -364) {
+      times = timeFormatter.format(DateTime.parse(dateTime));
+      today = formatter.format(DateTime.parse(dateTime));
+
+      return today;
+    } else {
+      if (min > 59) {
+        int m = (min / 60).floor();
+        if (m < 2) {
+          return "$m Hour ago";
+        } else {
+          return "$m Hours ago";
+        }
+      } else {
+        return "$min Mins ago";
+      }
+    }
+  } else {
+    times = timeFormatter.format(DateTime.parse(dateTime));
+    today = times;
+    return today;
+  }
+}
+
+extension DateOnlyCompare on DateTime {
+  bool isSameDate(DateTime other) {
+    return year == other.year && month == other.month && day == other.day;
+  }
+}
