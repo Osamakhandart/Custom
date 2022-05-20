@@ -1,0 +1,187 @@
+
+import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
+import 'package:intl/intl.dart';
+
+import 'package:xuma/Components/Network/API.dart';
+
+
+
+class SearchScreenTube extends SearchDelegate<String> {
+  CreateChannelController controller = Get.find();
+  final DateFormat formatter = DateFormat('yyyy-MM-dd');
+
+  final DateFormat timeFormatter = DateFormat('hh:mm aa');
+  @override
+  List<Widget>? buildActions(BuildContext context) {
+    // TODO: implement buildActions
+    return [
+      IconButton(
+          onPressed: () {
+            query = "";
+            showSuggestions(context);
+          },
+          icon: Icon(Icons.close))
+    ];
+  }
+
+  @override
+  Widget? buildLeading(BuildContext context) {
+    // TODO: implement buildLeading
+    return IconButton(
+        onPressed: () {
+          if (FocusManager.instance.primaryFocus!.hasFocus) {
+            FocusManager.instance.primaryFocus!.unfocus();
+          }
+          close(context, "");
+        },
+        icon: AnimatedIcon(
+          icon: AnimatedIcons.menu_arrow,
+          progress: transitionAnimation,
+        ));
+  }
+
+  @override
+  Widget buildResults(BuildContext context) {
+    // TODO: implement buildResults
+    return GetBuilder<CreateChannelController>(builder: (controller) {
+      return FutureBuilder<CreateChannelController>(
+          future: controller.searching(
+            0,
+            query.toLowerCase(),
+          ),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return Center(
+                child: CircularProgressIndicator(),
+              );
+            } else {
+              if (controller.tubeFeedModelSearch != null) {
+                if (controller.tubeFeedModelSearch!.data!.results!.isNotEmpty) {
+                  return RefreshIndicator(
+                    onRefresh: () => Future.sync(
+                      () {
+                        controller.pagingController.refresh();
+                        controller.update();
+                      },
+                    ),
+                    child: PagedListView<int, dynamic>(
+                        pagingController: controller.pagingController,
+                        shrinkWrap: true,
+                     builderDelegate: PagedChildBuilderDelegate<dynamic>(
+                          itemBuilder: (context, item, index) {
+                            if (item.title!.toLowerCase().contains(query)) {
+                              return GestureDetector(
+                                  onTap: () {
+                                 
+                                    });
+                                  },
+                                  child: gestureDetector(
+                                    index,
+                                    context,
+                                    item,
+                                  ));
+                            } else {
+                              return SizedBox.shrink();
+                            }
+                          },
+
+                          noMoreItemsIndicatorBuilder: (context) => Container(),
+                          noItemsFoundIndicatorBuilder: (context) =>
+                              Container(),
+                          firstPageErrorIndicatorBuilder: (context) =>
+                              Center(child: Image.asset("assets/nodata.png")),
+                          // firstPageProgressIndicatorBuilder: (context)=>Container(),
+                          newPageErrorIndicatorBuilder: (context) =>
+                              Container(),
+                    
+                          newPageProgressIndicatorBuilder: (context) =>
+                              Container(),
+                        )),
+                  );
+                } else {
+                  return Center(
+                    child: Image.asset("assets/nodata.png"),
+                  );
+                }
+              } else {
+                return Container();
+              }
+            }
+          });
+    });
+  }
+
+  @override
+  Widget buildSuggestions(BuildContext context) {
+    if (query.isEmpty || query == "") {
+      controller.suggestionList = controller.recentList;
+    } else {
+      controller.suggestionList = controller.recentList.where((element) {
+        return element.toString().startsWith(query);
+      }).toList();
+    }
+
+    String text(index, {span = false}) {
+      if (controller.suggestionList[index]
+          .toString()
+          .contains(query.toLowerCase())) {
+        if (query.length > controller.suggestionList[index].toString().length) {
+          return "";
+        } else {
+          if (span == true) {
+            return controller.suggestionList[index]
+                .toString()
+                .substring(query.length);
+          }
+          return controller.suggestionList[index]
+              .toString()
+              .substring(span == true ? query.length : 0, query.length);
+        }
+      } else {
+        if (span == true) {
+          return "";
+        }
+        return query.toString();
+      }
+    }
+
+    // TODO: implement buildSuggestions
+    return ListView.builder(
+        itemBuilder: (context, index) => ListTile(
+              onTap: () {
+                query = controller.suggestionList[index];
+                showResults(context);
+              },
+              leading: GestureDetector(
+                  onTap: () {
+                    controller.recentList.removeAt(index);
+                    controller.sp.write("recent", controller.recentList);
+                    // showSuggestions(context);
+                    showSearch(context: context, delegate: SearchScreenTube());
+                  },
+                  child: Icon(
+                    Icons.close,
+                    color: query.length >
+                            controller.suggestionList[index].toString().length
+                        ? Colors.white
+                        : Colors.grey,
+                  )),
+              title: RichText(
+                text: TextSpan(
+                    text: text(index),
+                    style: TextStyle(
+                        color: Colors.black, fontWeight: FontWeight.bold),
+                    children: [
+                      TextSpan(
+                          text: text(index, span: true),
+                          style: TextStyle(color: Colors.grey))
+                    ]),
+              ),
+            ),
+        itemCount: controller.suggestionList.length);
+  }
+///after search showing result
+  Widget gestureDetector(int index, context, TubeFeedResult data) {
+    return FeedCard(showTime: true, feedData: data);
+  }
+}
