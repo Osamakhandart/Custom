@@ -1,0 +1,25 @@
+void alertMethod({context, childrenData, click, buttonText, titleText, theme}) {
+  Alert(
+      context: context,
+      title: titleText,
+      content: Column(
+        children: childrenData,
+      ),
+      style: AlertStyle(
+        titleStyle: bahnschriftStyle(
+            fontSize: 25, color: theme, fontWeight: FontWeight.w200),
+        backgroundColor: DynamicColors.whiteColor,
+        animationDuration: Duration(milliseconds: 400),
+        animationType: AnimationType.fromTop,
+      ),
+      buttons: [
+        DialogButton(
+          color: theme,
+          onPressed: click,
+          child: Text(
+            buttonText,
+            style: TextStyle(color: DynamicColors.whiteColor, fontSize: 20),
+          ),
+        )
+      ]).show();
+}
