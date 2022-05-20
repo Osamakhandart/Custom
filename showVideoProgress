@@ -1,0 +1,35 @@
+   
+   ///post method
+   dynamic response = await dio.post(
+          apiUrl + url,
+          data: formData,
+          onSendProgress: (int sent, int total) {
+            print('progress: ${(sent / total * 100).toStringAsFixed(0)}%');
+            noti((sent / total * 100).toInt());
+          },
+        );
+        
+        ///
+        
+          noti(total) {
+    return notifications.show(
+      1,
+      'Xuma',
+      'Upload in Progress',
+      NotificationDetails(
+        android: AndroidNotificationDetails(
+          'DemoTestChannel',
+          'High Importance Notifications',
+          progress: total,
+          icon: 'res_app_icon',
+          enableVibration: false,
+          importance: Importance.high,
+          showProgress: true,
+          onlyAlertOnce: true,
+          maxProgress: 100,
+          channelShowBadge: false,
+        ),
+        iOS: const IOSNotificationDetails(),
+      ),
+    );
+  }
