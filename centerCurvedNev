@@ -1,0 +1,168 @@
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:xuma/Components/Color.dart';
+import 'package:xuma/Components/FloatButton.dart';
+import 'package:xuma/Components/TextStyle.dart';
+
+import 'package:xuma/Contstants/Texts.dart';
+
+
+import 'TubeNewsFeed.dart';
+import 'myChannels.dart';
+
+class TubeDashboardPage extends StatefulWidget {
+  @override
+  State<TubeDashboardPage> createState() => _TubeDashboardPageState();
+}
+
+class _TubeDashboardPageState extends State<TubeDashboardPage> {
+  @override
+  Widget build(BuildContext context) {
+    double heights = MediaQuery.of(context).size.height;
+    return GetBuilder<CreateChannelController>(
+      builder: (controller) {
+        return Scaffold(
+          extendBody: true,
+          floatingActionButtonLocation:
+              FloatingActionButtonLocation.centerFloat,
+          floatingActionButton: Padding(
+            padding: const EdgeInsets.only(bottom: 15),
+            child: FloatingActionButton(
+              backgroundColor: DynamicColors.primaryColor,
+              onPressed: () {
+                controller.videoFromGallery('gallery', context);
+              },
+              child: Icon(Icons.add),
+            ),
+          ),
+          body: CustomFloat(
+            bottomPad: 120,
+            firstChild: Stack(
+              children: [
+                IndexedStack(
+                  index: controller.tabIndex,
+                  children: [
+                    Container(),
+                      Container(),
+                        Container(),
+                          Container()
+                  ],
+                ),
+                Align(
+                  alignment: Alignment.bottomCenter,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.only(
+                          topRight: Radius.circular(25),
+                          topLeft: Radius.circular(25)),
+                      // boxShadow: [
+                      //   BoxShadow(
+                      //     color: Colors.black38,
+                      //     spreadRadius: 0,
+                      //     blurRadius: 7,
+                      //   ),
+                      // ],
+                    ),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(25.0),
+                        topRight: Radius.circular(25.0),
+                      ),
+                      child: SizedBox(
+                        height: heights / 7.2,
+                        child: Stack(
+                          alignment: Alignment.center,
+                          children: [
+                            Align(
+                              alignment: Alignment.bottomCenter,
+                              child: SafeArea(
+                                bottom: false,
+                                child: BottomAppBar(
+                                  clipBehavior: Clip.antiAlias,
+                                  shape: CircularNotchedRectangle(),
+                                  notchMargin: 3,
+                                  elevation: 10,
+                                  // color: Colors.g,
+                                  child: BottomNavigationBar(
+                                    elevation: 10,
+                                    // backgroundColor: Colors.white,
+                                    type: BottomNavigationBarType.fixed,
+
+                                    showUnselectedLabels: true,
+                                    showSelectedLabels: true,
+                                    selectedLabelStyle: bahnschriftStyle(
+                                        fontSize: 14,
+                                        color: DynamicColors.primaryColor),
+                                    unselectedLabelStyle: bahnschriftStyle(
+                                        fontSize: 14,
+                                        color: DynamicColors.primaryColor),
+                                    fixedColor: DynamicColors.primaryColor,
+                                    onTap: controller.changeTabIndex,
+                                    currentIndex: controller.tabIndex,
+                                    items: [
+                                      BottomNavigationBarItem(
+                                        activeIcon: ImageIcon(
+                                          AssetImage("assets/profileIcon.png"),
+                                          color: DynamicColors.primaryColor,
+                                        ),
+                                        icon: ImageIcon(
+                                          AssetImage("assets/profileIcon.png"),
+                                          color: Colors.grey,
+                                        ),
+                                        label: Texts.navbarTitleOne,
+                                      ),
+                                      BottomNavigationBarItem(
+                                        activeIcon: ImageIcon(
+                                          AssetImage("assets/feed.png"),
+                                          color: DynamicColors.primaryColor,
+                                        ),
+                                        icon: ImageIcon(
+                                          AssetImage("assets/feed.png"),
+                                          color: Colors.grey,
+                                        ),
+                                        label: Texts.navbarTitleTwo,
+                                      ),
+                                      BottomNavigationBarItem(
+                                        activeIcon: ImageIcon(
+                                          AssetImage("assets/channel.png"),
+                                          color: DynamicColors.primaryColor,
+                                        ),
+                                        icon: ImageIcon(
+                                          AssetImage("assets/channel.png"),
+                                          color: Colors.grey,
+                                        ),
+                                        label: Texts.channels,
+                                      ),
+                                      BottomNavigationBarItem(
+                                        activeIcon: ImageIcon(
+                                          AssetImage(
+                                              "assets/notificationIcon.png"),
+                                          color: DynamicColors.primaryColor,
+                                        ),
+                                        icon: ImageIcon(
+                                          AssetImage(
+                                              "assets/notificationIcon.png"),
+                                          color: Colors.grey,
+                                        ),
+                                        label: Texts.navbarTitleFour,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                           
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                )
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+}
