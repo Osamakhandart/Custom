@@ -1,0 +1,159 @@
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:xuma/Components/TextStyle.dart';
+
+import 'Color.dart';
+
+class CustomTextFields extends StatelessWidget {
+  TextEditingController controller = TextEditingController();
+  dynamic loginController;
+  CustomTextFields(
+      {Key? key,
+      this.hintText,
+      this.obscureText = false,
+      this.suffix,
+      required this.controller,
+      this.borderColor = true,
+      this.focus = false,
+      this.maxLines = 1,
+      this.prefixIcons,
+      this.onlyRead = true,
+      this.validationError,
+      this.isConfirmPassword = false,
+      this.isEmail = false,
+      this.align = TextAlign.start,
+      this.radiusCircle = 3,
+      this.fillColor,
+      this.textInputType = TextInputType.text,
+      this.borderAssignColor,
+      this.hintStyle,
+      this.borderWidth,
+      this.decoration,
+      this.suffixContentPadding,
+      this.onFieldSubmitted,
+      this.cursorColor,
+      this.contentPad = true,
+      this.textCustomStyle,
+      this.loginController,
+      this.enable = true,
+      this.onDone})
+      : super(key: key);
+
+  String? hintText;
+  Widget? suffix;
+  bool? obscureText = false;
+  bool? focus = false;
+  ValueChanged<String>? onFieldSubmitted;
+  bool? borderColor = true;
+  int? maxLines;
+  Widget? prefixIcons;
+  BoxDecoration? decoration;
+  bool? onlyRead;
+  TextInputType? textInputType;
+  String? validationError;
+  bool? isConfirmPassword = false;
+  bool? isEmail = false;
+  bool? enable = true;
+  double? radiusCircle = 3;
+  Color? fillColor;
+  EdgeInsets? suffixContentPadding;
+  Color? borderAssignColor;
+  Color? cursorColor;
+  TextStyle? hintStyle;
+  TextStyle? textCustomStyle;
+  TextAlign align = TextAlign.start;
+  bool contentPad = true;
+  VoidCallback? onDone;
+  // ignore: prefer_typing_uninitialized_variables
+  double? borderWidth;
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+        decoration: borderColor!
+            ? decoration ??
+                BoxDecoration(
+                    borderRadius: BorderRadius.circular(radiusCircle!),
+                    color: fillColor ?? DynamicColors.whiteColor,
+                    border: Border.all(
+                      color: borderAssignColor ?? DynamicColors.primaryColor,
+                      width: borderWidth ?? 1.8,
+                    ))
+            : decoration ??
+                BoxDecoration(
+                  border: Border(
+                    bottom:
+                        BorderSide(width: 2, color: DynamicColors.textColor),
+                  ),
+                ),
+        child: TextFormField(
+          onSaved: (c) {},
+          onEditingComplete: onDone ?? () {},
+          enabled: enable,
+          textAlign: align,
+          cursorColor: cursorColor,
+          autofocus: focus!,
+          style: textCustomStyle ??
+              poppinsStyle(
+                fontSize: 16,
+                color: DynamicColors.textColor,
+              ),
+          controller: controller,
+          keyboardType: textInputType,
+          onFieldSubmitted: onFieldSubmitted,
+          decoration: InputDecoration(
+            contentPadding: suffixContentPadding != null
+                ? suffixContentPadding
+                : suffix == null
+                    ? EdgeInsets.only(
+                        left: contentPad ? 12 : 0,
+                      )
+                    : EdgeInsets.only(
+                        left: 12,
+                        top: 10,
+                      ),
+            border: InputBorder.none,
+            hintText: hintText,
+            hintStyle: hintStyle ?? montserratStyle(),
+            helperStyle: montserratStyle(),
+            suffixIcon: suffix,
+            prefixIcon: prefixIcons,
+          ),
+          readOnly: !onlyRead!,
+          maxLines: maxLines,
+          minLines: 1,
+          obscureText: obscureText!,
+          validator: (value) {
+            if (value!.isEmpty) {
+              return 'Please Enter $validationError';
+            } else if (isConfirmPassword == true) {
+              if (loginController.signUpPasswordController.text ==
+                  loginController.signUpConformPasswordController.text) {
+                return null;
+              } else {
+                return "Password doesn't match";
+              }
+            } else {
+              if (isEmail == true) {
+                return validateEmail(value);
+              } else {
+                return null;
+              }
+            }
+          },
+        ));
+  }
+
+  validateEmail(String value) {
+    String pattern =
+        r"^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]"
+        r"{0,253}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]"
+        r"{0,253}[a-zA-Z0-9])?)*$";
+    RegExp regex = RegExp(pattern);
+    if (!regex.hasMatch(value)) {
+      return "Enter a valid email address";
+    } else {
+      return null;
+    }
+  }
+}
