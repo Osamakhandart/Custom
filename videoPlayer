@@ -1,0 +1,98 @@
+ ///defining
+ 
+   BetterPlayerController? betterPlayerController;
+ List<DeviceOrientation> normalOrientations = [
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown,
+    DeviceOrientation.landscapeLeft,
+    DeviceOrientation.landscapeRight
+  ];
+
+  List<DeviceOrientation> portraitOrientation = [
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown,
+  ];
+
+  List<DeviceOrientation> landscapeOrientation = [
+    DeviceOrientation.landscapeLeft,
+    DeviceOrientation.landscapeRight
+  ];
+  
+   ///initializing
+  @overide
+ void initState() {
+  
+  
+
+  
+    videoControl.firstView = true;
+    BetterPlayerDataSource dataSource = BetterPlayerDataSource(
+        BetterPlayerDataSourceType.network,
+     
+     "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4");
+   betterPlayerController = BetterPlayerController(
+        BetterPlayerConfiguration().copyWith(autoPlay: true));
+  betterPlayerController!.setupDataSource(dataSource);
+   betterPlayerController!.addEventsListener((event) {
+      if (event.betterPlayerEventType == BetterPlayerEventType.progress) {
+        ///On fullscreen event check current Orientation
+        if (event.betterPlayerEventType ==
+            BetterPlayerEventType.openFullscreen) {
+     orientationBeforeFullScreen =
+              MediaQuery.of(context).orientation;
+        }
+     
+
+        ///On fullscreen finish set DeviceOrientation based on saved Orientation
+        if (event.betterPlayerEventType ==
+            BetterPlayerEventType.hideFullscreen) {
+          if (orientationBeforeFullScreen ==
+              Orientation.portrait) {
+            SystemChrome.setPreferredOrientations(
+               portraitOrientation);
+          }
+          if (orientationBeforeFullScreen ==
+              Orientation.landscape) {
+            SystemChrome.setPreferredOrientations(
+             landscapeOrientation);
+          }
+
+          ///Once page correctly render in given Orientation, add normal
+          ///orientations, so user can use both portrait and landscape.
+          Future.delayed(Duration(milliseconds: 500), () {
+            SystemChrome.setPreferredOrientations(
+                videoControl.normalOrientations);
+          });
+        }
+      }
+      if (event.betterPlayerEventType == BetterPlayerEventType.play) {
+
+      } else if (event.betterPlayerEventType == BetterPlayerEventType.pause) {
+     
+      }
+      if (event.betterPlayerEventType == BetterPlayerEventType.finished) {
+   
+      }
+    });
+ 
+    super.initState();
+  }
+  
+  
+  
+  
+  ///display widget
+  
+  
+     SizedBox(
+          height: heights / 3.5,
+          width: widths,
+          child: AspectRatio(
+            aspectRatio: 16 / 9,
+            child:
+                BetterPlayer(controller:betterPlayerController!),
+          ),
+        ),
+        
+        
+        end//
