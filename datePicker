@@ -1,0 +1,53 @@
+import 'package:date_time_picker/date_time_picker.dart';
+import 'package:flutter/material.dart';
+import 'package:xuma/Components/Color.dart';
+
+class DatePick extends StatelessWidget {
+  DatePick({required this.dateChange, required this.setColor, this.intColor});
+  var dateChange;
+  Color setColor;
+  Color? intColor;
+
+  @override
+  Widget build(BuildContext context) {
+    return Theme(
+        data: Theme.of(context).copyWith(
+          colorScheme: ColorScheme.light(
+            primary: setColor, // header background color
+            onPrimary: intColor ?? Colors.black, // header text color
+            onSurface: DynamicColors.textColor, // body text color
+          ),
+          textButtonTheme: TextButtonThemeData(
+            style: TextButton.styleFrom(
+              primary: setColor, // button text color
+            ),
+          ),
+        ),
+        child: DateTimePicker(
+            decoration: InputDecoration(
+              border: InputBorder.none,
+              icon: Padding(
+                padding: const EdgeInsets.only(left: 15),
+                child: Icon(
+                  Icons.event,
+                  color: setColor,
+                ),
+              ),
+              hintText: 'Date of Birthday',
+            ),
+            firstDate: DateTime(1900),
+            lastDate: DateTime(2100),
+            onChanged: dateChange));
+    // validator: (val) {
+    //
+    // },
+  }
+}
+
+///calling date picker
+ DatePick(
+                                setColor: DynamicColors.camColor,
+                                dateChange: (v) {
+                                  camEditControl.dateOfBirth = v.toString();
+                                },
+                              )
