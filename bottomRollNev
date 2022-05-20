@@ -1,0 +1,164 @@
+// ignore_for_file: prefer_const_constructors, file_names, prefer_const_literals_to_create_immutables, avoid_print, sized_box_for_whitespace, unrelated_type_equality_checks, unnecessary_string_interpolations
+
+import 'package:creative_rivals/Views/Chat/ChatListScreen.dart';
+import 'package:creative_rivals/Views/FriendList/friendListScreen.dart';
+import 'package:creative_rivals/Views/leaderBoard.dart';
+import 'package:creative_rivals/Views/notifications.dart';
+import 'package:creative_rivals/components/Colors.dart';
+import 'package:creative_rivals/components/textStyling.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:fluttericon/font_awesome5_icons.dart';
+import 'package:fluttericon/rpg_awesome_icons.dart';
+import 'package:get/get.dart';
+import 'package:get/get_rx/src/rx_types/rx_types.dart';
+import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
+import 'package:get/get_state_manager/src/simple/get_controllers.dart';
+import 'package:rolling_nav_bar/rolling_nav_bar.dart';
+
+import 'Duels/duelsCategoryScreen.dart';
+
+// ignore: must_be_immutable
+class BottomNavigation extends StatelessWidget {
+  final NavController navController = Get.find();
+
+  final List<Widget> bodyContent = [
+    // LeaderBoard(),
+    FriendListScreen(),
+    LeaderBoard(),
+    DuelsScreen(),
+    NotificationScreen(),
+    ChatListScreen(),
+  ];
+
+  //IconData icon = ImageIcon(image);
+
+  List<IconData> iconList = [
+    // RpgAwesome.podium,
+    Icons.group,
+    RpgAwesome.podium,
+
+    RpgAwesome.crossed_swords,
+    //IconData(codePoint),
+    // 'assets/duel2.svg',
+    Icons.notifications,
+    // Icons.chat,
+    FontAwesome5.comments,
+  ];
+
+  BottomNavigation({Key? key}) : super(key: key);
+
+  Widget text(text) {
+    return Text(
+      text,
+      style: redHatStyle(fontSize: 10, color: Colors.white),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return WillPopScope(
+      onWillPop: () async {
+        final time = DateTime.now().difference(DateTime.now());
+        final canExit = time >= Duration(seconds: 3);
+        if (canExit) {
+          final snack = SnackBar(
+            content: Text('Press back Button again to Exit'),
+            duration: Duration(seconds: 3),
+          );
+          ScaffoldMessenger.of(context).showSnackBar(snack);
+          return false;
+        } else {
+          return true;
+        }
+      },
+      child: Scaffold(
+          floatingActionButton: Container(
+            decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                gradient: RadialGradient(
+                  colors: [
+                    Color(0xFF09D5DD),
+                    Color(0xFF38338D),
+                  ],
+                )),
+            child: FloatingActionButton(
+              backgroundColor: Colors.transparent,
+              onPressed: () {
+                navController.selectIndex = 2;
+              },
+              child: Icon(
+                RpgAwesome.crossed_swords,
+                color: DynamicColor.whiteColor,
+              ),
+            ),
+          ),
+          floatingActionButtonLocation:
+              FloatingActionButtonLocation.centerDocked,
+          body: Obx(
+            () => Center(
+              child: bodyContent.elementAt(navController.selectIndex),
+            ),
+          ),
+          bottomNavigationBar: Obx(() =>
+
+              /// builder
+              Container(
+                height: kToolbarHeight * 1.1,
+                child: RollingNavBar.iconData(
+                  indicatorColors: [
+                    DynamicColor.whiteColor,
+                    DynamicColor.whiteColor,
+                    DynamicColor.primary,
+                    DynamicColor.whiteColor,
+                    DynamicColor.whiteColor,
+                  ],
+                  activeIconColors: [
+                    DynamicColor.primary,
+                    DynamicColor.primary,
+                    DynamicColor.primary,
+                    DynamicColor.primary,
+                    DynamicColor.primary,
+                  ],
+                  iconColors: [
+                    DynamicColor.whiteColor,
+                    DynamicColor.whiteColor,
+                    DynamicColor.primary,
+                    DynamicColor.whiteColor,
+                    DynamicColor.whiteColor,
+                  ],
+                  navBarDecoration: BoxDecoration(color: DynamicColor.primary),
+                  // indicatorSides: 8,
+                  indicatorCornerRadius: 1.0,
+                  onTap: (index) {
+                    navController.selectIndex = index;
+                    print(index);
+                  },
+
+                  iconText: [
+                    text('Friends'),
+                    text('Leaderboard'),
+                    text('Duel'),
+                    text('Notification'),
+                    text('Chat'),
+                  ],
+                  activeIndex: navController.selectIndex,
+                  iconData: iconList,
+                  // currentIndex: navController.selectIndex,
+                ),
+              ))
+
+          ///FloatingNavBarEnd
+
+          ),
+    );
+  }
+}
+
+class NavController extends GetxController {
+  var selectedIndex = 1.obs;
+
+  get selectIndex => selectedIndex.value;
+
+  set selectIndex(index) => selectedIndex.value = index;
+}
