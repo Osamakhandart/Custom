@@ -1,0 +1,113 @@
+///main method  
+ void main() async {
+   WidgetsFlutterBinding.ensureInitialized();
+  await GetStorage.init();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseConfig.platformOptions,
+  );
+  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+
+  if (!kIsWeb) {
+    channel = const AndroidNotificationChannel(
+        'high_importance_channel', // id
+        'High Importance Notifications', // title
+        description:
+        'This channel is used for important notifications.', // description
+        importance: Importance.max,
+        enableVibration: true);
+
+    flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+
+    /// Create an Android Notification Channel.
+    ///
+    /// We use this channel in the `AndroidManifest.xml` file to override the
+    /// default FCM channel to enable heads up notifications.
+    await flutterLocalNotificationsPlugin
+        .resolvePlatformSpecificImplementation<
+        AndroidFlutterLocalNotificationsPlugin>()
+        ?.createNotificationChannel(channel);
+
+    /// Update the iOS foreground notification presentation options to allow
+    /// heads up notifications.
+    await FirebaseMessaging.instance
+        .setForegroundNotificationPresentationOptions(
+      alert: true,
+      badge: true,
+      sound: true,
+
+
+    );
+  }    
+  runApp(const MyApp());
+}
+///mainmethodclose
+
+///init open
+
+@override
+  void initState() {
+
+    super.initState();
+    
+    flutterLocalNotificationsPlugin.initialize(initializationSettings,
+        onSelectNotification: (v){};
+///
+    FirebaseMessaging.instance
+        .getInitialMessage()
+        .then((RemoteMessage? message) {
+      if (message != null) {
+
+      }
+    });
+///
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
+    
+      RemoteNotification? notification = message.notification;
+      AndroidNotification? android = message.notification?.android;
+      noti(notification);
+      
+      if (notification != null && android != null && !kIsWeb) {
+  
+      }
+    });
+
+///
+    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+     
+    });
+
+///
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+
+        print(message);
+    });
+     }
+     
+     
+     ///show localiy
+
+  noti(notification) {
+
+    flutterLocalNotificationsPlugin.show(
+        notification.hashCode,
+        notification.title,
+        notification.body,
+        NotificationDetails(
+          android: AndroidNotificationDetails(
+            channel.id,
+            channel.name,
+            priority: Priority.max,
+            importance: Importance.max,
+            channelDescription: channel.description,
+            playSound: true,
+            enableVibration: true,
+            icon: 'res_app_icon',
+          ),
+
+        ),
+        payload: "order"
+
+        // payload: action
+    );
+  }
+  ///init close
