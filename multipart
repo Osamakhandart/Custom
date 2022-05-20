@@ -1,0 +1,22 @@
+import 'package:http_parser/http_parser.dart';
+import 'package:dio/dio.dart' as form;
+
+
+///image multipart
+multiPartingImage(image) {
+  return form.MultipartFile.fromFileSync(image!.path,
+      filename: "Image.${image!.path.split(".").last}",
+      contentType: MediaType("image", image!.path.split(".").last));
+}
+///video multipart
+multiPartingVideo(video) {
+  return form.MultipartFile.fromFileSync(video!.path,
+      filename: "Image.${video!.path.split(".").last}",
+      contentType: MediaType("image", video!.path.split(".").last));
+}
+///with obx
+multiPartingImageObx(image) {
+  return form.MultipartFile.fromFileSync(image!.value!.path,
+      filename: "Image.${image!.value!.path.split(".").last}",
+      contentType: MediaType("image", image!.value!.path.split(".").last));
+}
