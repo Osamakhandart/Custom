@@ -1,0 +1,165 @@
+import 'package:flutter/material.dart';
+
+import 'package:xuma/Components/Color.dart';
+
+// ignore: must_be_immutable
+class DropDownClass extends StatelessWidget {
+  var customIcon;
+  var hint;
+  List? listGet = [];
+  Widget? prefixIcon;
+  Color? dropDownColor;
+  bool isPrefixIcon;
+  bool objectDropDown;
+  List get list => list!;
+  dynamic Function(dynamic)? listener;
+  dynamic Function(dynamic)? objectListener;
+
+  DropDownClass({
+    this.customIcon = false,
+    List? list,
+    var hint,
+    Color? dropDownColor,
+    Widget? prefixIcon,
+    bool isPrefixIcon = true,
+    bool border = true,
+    bool objectdropdown = false,
+    dynamic Function(dynamic)? listener,
+    dynamic Function(dynamic)? objectListener,
+  })  : listGet = list,
+        hint = hint,
+        isPrefixIcon = isPrefixIcon,
+        prefixIcon = prefixIcon,
+        dropDownColor = dropDownColor,
+        listener = listener,
+        objectDropDown = objectdropdown,
+        objectListener = objectListener;
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      child: DropdownButtonHideUnderline(
+        child: objectDropDown
+            ? DropdownButtonFormField<String>(
+                // value: _val,
+                //  value: _hint??"",
+                dropdownColor: dropDownColor ?? Colors.white,
+                decoration: isPrefixIcon == false
+                    ? InputDecoration(
+                        border: InputBorder.none,
+                        fillColor: Colors.white,
+                        filled: true)
+                    : InputDecoration(
+                        border: InputBorder.none,
+                        prefixIcon: prefixIcon,
+                        // prefixIcon: customIcon == false
+                        //     ? Icon(Icons.person,
+                        //         size: 22, color: DynamicColors.primaryColor)
+                        //     : Icon(Icons.event),
+                        fillColor: Colors.white,
+                        filled: true),
+                style: TextStyle(
+                  color: Color(0xff272727),
+                  fontWeight: FontWeight.w300,
+                ),
+                isExpanded: true,
+
+                icon: Icon(
+                  Icons.keyboard_arrow_down,
+                  color: Colors.black87,
+                ),
+                hint: Text(
+                  hint,
+                  style:
+                      TextStyle(color: DynamicColors.textColor, fontSize: 15),
+                ),
+                items: list!.map((item) {
+                  return DropdownMenuItem<String>(
+                    value: item,
+                    child: Text(item,
+                        style: TextStyle(
+                          color: Color(0xff272727),
+                          fontWeight: FontWeight.w300,
+                        )),
+                  );
+                }).toList(),
+                onChanged: (value) {
+                  if (listener != null) listener!.call(value);
+                  // if(_listType == "focus"){
+                  //   list.map((item) {
+                  //     if (item.minutes.toString() == value) {
+                  //       if (_objectListener != null) _objectListener!.call(item);
+                  //     }
+                  //   }).toList();
+                  // }
+                },
+              )
+            : DropdownButtonFormField<dynamic>(
+                // value: _val,
+                //  value: _hint??"",
+                dropdownColor: dropDownColor ?? Colors.white,
+                decoration: isPrefixIcon == false
+                    ? InputDecoration(
+                        border: InputBorder.none,
+                        fillColor: Colors.white,
+                        filled: true)
+                    : InputDecoration(
+                        border: InputBorder.none,
+                        prefixIcon: prefixIcon,
+                        // prefixIcon: customIcon == false
+                        //     ? Icon(Icons.person,
+                        //         size: 22, color: DynamicColors.primaryColor)
+                        //     : Icon(Icons.event),
+                        fillColor: Colors.white,
+                        filled: true),
+                style: TextStyle(
+                  color: Color(0xff272727),
+                  fontWeight: FontWeight.w300,
+                ),
+                isExpanded: true,
+
+                icon: Icon(
+                  Icons.keyboard_arrow_down,
+                  color: Colors.black87,
+                ),
+                hint: Text(
+                  hint,
+                  style:
+                      TextStyle(color: DynamicColors.textColor, fontSize: 15),
+                ),
+                items: list!.map((item) {
+                  return DropdownMenuItem<dynamic>(
+                    value: item,
+                    child: Row(
+                      children: [
+                        CircleAvatar(
+                          radius: 20,
+                          backgroundImage: NetworkImage(item.thumbnail),
+                        ),
+                        SizedBox(
+                          width: 10,
+                        ),
+                        Text(item.title,
+                            style: TextStyle(
+                              color: Color(0xff272727),
+                              fontWeight: FontWeight.w300,
+                            )),
+                      ],
+                    ),
+                  );
+                }).toList(),
+                onChanged: (value) {
+                  if (listener != null) listener!.call(value);
+                  // if(_listType == "focus"){
+                  //   list.map((item) {
+                  //     if (item.minutes.toString() == value) {
+                  //       if (_objectListener != null) _objectListener!.call(item);
+                  //     }
+                  //   }).toList();
+                  // }
+                },
+              ),
+      ),
+    );
+  }
+}
