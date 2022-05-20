@@ -1,0 +1,14 @@
+import 'package:video_thumbnail/video_thumbnail.dart';
+  
+  
+  thumbnail() async {
+    videoThumbnailFile = await VideoThumbnail.thumbnailFile(
+      video: '',
+      thumbnailPath: (await getTemporaryDirectory()).path,
+      imageFormat: ImageFormat.PNG,
+      // maxHeight: 96,
+      // specify the height of the thumbnail, let the width auto-scaled to keep the source aspect ratio
+      quality: 100,
+    );
+    update();
+  }
