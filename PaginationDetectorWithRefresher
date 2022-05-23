@@ -1,0 +1,98 @@
+///variable to control pagination
+
+
+bool scroll=false;
+List dataList=[];
+
+
+
+
+///Refresh Methods
+
+  RefreshController refreshController =
+      RefreshController(initialRefresh: false);
+
+  void onRefresh() async {
+    // monitor network fetch
+    await feedController.getFeed();
+    refreshController.refreshCompleted();
+  }
+
+  void _onLoading() async {
+    // monitor network fetch
+    await Future.delayed(Duration(milliseconds: 1000));
+    // if failed,use loadFailed(),if no data return,use LoadNodata()
+
+    if (mounted) setState(() {});
+    refreshController.loadComplete();
+  }
+  
+  
+  
+  
+  
+///Widget over screen containing pagination
+
+NotificationListener<ScrollNotification>(
+      onNotification: (scrollNotification) {
+        print("direction ${scrollNotification.metrics.pixels.toString()}    "
+            "${scrollNotification.metrics.maxScrollExtent}");
+        if (scrollNotification.metrics.pixels ==
+            scrollNotification.metrics.maxScrollExtent) {
+          print(scrollNotification);
+          if (scroll == false) {
+            scroll  = true;
+            if (link.isNotEmpty) {
+             ///HIT URL
+              return true;
+            }
+          }
+             return true;
+        } else {
+          print("min");
+        }
+        return false;
+      },
+      child:           Padding(
+                    padding: EdgeInsets.only(
+                      top: kToolbarHeight * 1.5,
+                      bottom: kToolbarHeight + 5,
+                    ),
+                    
+                    
+                    ///Refresher
+                    child: SmartRefresher(
+                      enablePullDown: true,
+                      physics: AlwaysScrollableScrollPhysics(),
+                      header: WaterDropHeader(
+                        waterDropColor: Colors.black,
+                        refresh: SizedBox(
+                          width: 25.0,
+                          height: 25.0,
+                          child: CupertinoActivityIndicator(color: Colors.grey),
+                        ),
+                        complete: Icon(
+                          WebSymbols.ok,
+                          color: Colors.black,
+                        ),
+                      ),
+                      controller: refreshController,
+                      onRefresh: onRefresh,
+                      onLoading: _onLoading,
+                      child: isLoader
+                          ? ListView.builder(
+                              itemCount: dataList.length,
+                              shrinkWrap: true,
+                              // physics: NeverScrollableScrollPhysics(),
+                              scrollDirection: Axis.vertical,
+                              itemBuilder: (BuildContext context, int index) {
+                                return GestureDetector(
+                                    onTap: () {
+                                 
+                                    },
+                                    ///show card
+                                    child:Container());
+                              })
+                          : Empty(),
+                    ),
+                  ),
