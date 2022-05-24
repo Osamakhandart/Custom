@@ -1,0 +1,7 @@
+   Get.bottomSheet(
+                  SocialComponents().commentSheet(
+                      context: context, commentList: feedControl.comments),
+                  isScrollControlled: true,
+                  enableDrag: true,
+                  persistent: false,
+                  isDismissible: true);
