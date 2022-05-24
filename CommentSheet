@@ -1,0 +1,200 @@
+import 'package:comment_tree/comment_tree.dart';
+
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:xuma/Components/Color.dart';
+import 'package:xuma/Controller/SocialContoller/NewsFeedController.dart';
+
+import 'CircleImage.dart';
+import 'CommentSheet.dart';
+import 'TextStyle.dart';
+import 'textfields.dart';
+
+class SocialComponents {
+  final NewsFeedController feedController = Get.put(NewsFeedController());
+ 
+  commentSheet({context, required List commentList}) {
+    double widths = MediaQuery.of(context).size.width;
+    double heights = MediaQuery.of(context).size.height;
+
+    return GetBuilder<NewsFeedController>(builder: (controller) {
+      return Container(
+        height: heights / 1.2,
+        width: widths,
+        decoration: BoxDecoration(
+            color: DynamicColors.whiteColor,
+            borderRadius: BorderRadius.only(
+                topLeft: const Radius.circular(25.0),
+                topRight: const Radius.circular(25.0))),
+        child: Stack(
+          children: [
+            SingleChildScrollView(
+              child: Column(
+                children: [
+                  SizedBox(
+                    height: heights / 18,
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 10, right: 10),
+                      child: Row(
+                        children: [
+                          CircleAvatar(
+                            radius: 12,
+                            child: Icon(
+                              Icons.thumb_up_off_alt,
+                              color: DynamicColors.whiteColor,
+                              size: heights / 45,
+                            ),
+                          ),
+                          SizedBox(
+                            width: 5,
+                          ),
+                          Text(
+                            '12',
+                            style: bahnschriftStyle(
+                                fontSize: 14,
+                                color: DynamicColors.primaryColor),
+                          ),
+                          Spacer(),
+                          Icon(
+                            Icons.thumb_up_sharp,
+                            color: DynamicColors.primaryColor,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  Container(
+                    width: widths,
+                    height: 1,
+                    color: DynamicColors.primaryColor,
+                  ),
+                  CommentBuilder(
+                    commentList: commentList,
+                  ),
+                  SizedBox(
+                    height: heights / 11,
+                  ),
+                ],
+              ),
+            ),
+            Positioned(
+              bottom: 0,
+              child: Container(
+                  decoration: BoxDecoration(
+                    color: DynamicColors.whiteColor,
+                    border: Border(
+                        top: BorderSide(
+                            color: DynamicColors.primaryColor, width: 3)),
+                  ),
+                  width: widths,
+                  height: controller.commentFeild.value
+                      ? heights / 12
+                      : heights / 8,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      !feedController.commentFeild.value
+                          ? Expanded(
+                              child: SizedBox(
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    SizedBox(
+                                      width: widths / 6,
+                                    ),
+                                    InkWell(
+                                      child: Icon(Icons.clear),
+                                      onTap: () {
+                                        controller.onCommentTap();
+                                        controller.commentText.clear();
+                                      },
+                                    ),
+                                    Expanded(
+                                      child: RichText(
+                                        text: TextSpan(
+                                          text: 'Replying to ',
+                                          style: ralewayRegular(
+                                            fontWeight: FontWeight.w700,
+                                            fontSize: heights / 70,
+                                            color: DynamicColors.textColor,
+                                          ),
+                                          children: <TextSpan>[
+                                            TextSpan(
+                                              text: feedController.replierName,
+                                              style: poppinsStyle(
+                                                fontSize: heights / 70,
+                                                color: Colors.black,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      width: 30,
+                                    ),
+                                  ],
+                                ),
+                                // width: widths / 1.4,
+                              ),
+                            )
+                          : Container(),
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          SizedBox(
+                            width: widths / 25,
+                          ),
+                          Icon(
+                            Icons.camera_alt,
+                            size: heights / 25,
+                          ),
+                          SizedBox(
+                            width: widths / 25,
+                          ),
+                          Container(
+                            decoration: BoxDecoration(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(15))),
+                            height: heights / 15,
+                            width: widths / 1.4,
+                            child: CustomTextFields(
+                              fillColor: DynamicColors.callGrey,
+                              controller: feedController.commentText,
+                              focus: false,
+                              hintText: feedController.commentFeild.value
+                                  ? 'Write a comment'
+                                  : 'Write a reply',
+                              hintStyle: bahnschriftStyle(
+                                  fontSize: heights / 75,
+                                  color: DynamicColors.textColor,
+                                  fontWeight: FontWeight.w200),
+                            ),
+                          ),
+                          SizedBox(
+                            width: widths / 25,
+                          ),
+                          InkWell(
+                            onTap: () {},
+                            child: Icon(
+                              Icons.send,
+                              color: DynamicColors.primaryColor,
+                            ),
+                          )
+                        ],
+                      ),
+                      controller.commentFeild.value
+                          ? Container()
+                          : SizedBox(
+                              height: 10,
+                            )
+                    ],
+                  )),
+            )
+          ],
+        ),
+      );
+    });
+  }
+}
