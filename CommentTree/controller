@@ -1,0 +1,170 @@
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+
+
+class NewsFeedController extends GetxController {
+
+
+
+  TextEditingController commentText = TextEditingController();
+ 
+  RxBool replyFeild = false.obs;
+  RxBool commentFeild = true.obs;
+  var focus = true.obs;
+  var focusNode = FocusNode().obs;
+  String? replierName;
+
+
+  onReplyTap(replier) {
+    commentFeild.value = false;
+    replierName = replier;
+    commentText.text = replier;
+    update();
+  }
+
+  onCommentTap() {
+    commentFeild.value = true;
+    update();
+  }
+
+  List comments = [
+    {
+      'user_id': '1',
+      'id': '1',
+      'comment': 'a',
+      'username': 'owen Reloaded 1 of 1872 libraries in 3,001ms.',
+      'profile': 'https://wallpaperaccess.com/full/2213426.jpg',
+      'reply': false
+          ? 'a.Rep'
+          : [
+              {
+                'user_id': 'a.userId',
+                'id': 'a.id',
+                'comment': 'b',
+                'username': 'Reloaded 1 of 1872 libraries in 3,001ms.',
+                'profile': dummyProfile,
+                'reply': false
+                    ? 'a.Rep'
+                    : [
+                        {
+                          'user_id': 'a.userId',
+                          'id': 'a.id',
+                          'comment': 'c',
+                          'username':
+                              'Reloaded 1 of 1872 libraries in 3,001ms.',
+                          'profile': dummyProfile,
+                          'reply': []
+                        }
+                      ]
+              },
+              {
+                'user_id': 'a.userId',
+                'id': 'a.id',
+                'comment': 'b',
+                'username': 'Reloaded 1 of 1872 libraries in 3,001ms.',
+                'profile': dummyProfile,
+                'reply': false
+                    ? 'a.Rep'
+                    : [
+                        {
+                          'user_id': 'a.userId',
+                          'id': 'a.id',
+                          'comment': 'c',
+                          'username':
+                              'Reloaded 1 of 1872 libraries in 3,001ms.',
+                          'profile': dummyProfile,
+                          'reply': []
+                        }
+                      ]
+              },
+            ],
+      'replyCount': 'a.replyCount',
+      'replyLikeCount': 'a.replyLikeCount',
+      'myCommentLike': 'a.myCommentLike'
+    },
+    {
+      'user_id': '1',
+      'id': '1',
+      'comment': 'a',
+      'username': 'owen Reloaded 1 of 1872 libraries in 3,001ms.',
+      'profile': 'https://wallpaperaccess.com/full/2213426.jpg',
+      'reply': false
+          ? 'a.Rep'
+          : [
+              {
+                'user_id': 'a.userId',
+                'id': 'a.id',
+                'comment': 'b',
+                'username': 'Reloaded 1 of 1872 libraries in 3,001ms.',
+                'profile': dummyProfile,
+                'reply': false
+                    ? 'a.Rep'
+                    : [
+                        {
+                          'user_id': 'a.userId',
+                          'id': 'a.id',
+                          'comment': 'c',
+                          'username':
+                              'Reloaded 1 of 1872 libraries in 3,001ms.',
+                          'profile': dummyProfile,
+                          'reply': []
+                        }
+                      ]
+              }
+            ],
+      'replyCount': 'a.replyCount',
+      'replyLikeCount': 'a.replyLikeCount',
+      'myCommentLike': 'a.myCommentLike'
+    },
+    {
+      'user_id': 'a.userId',
+      'id': 'a.id',
+      'comment': 'a.postText',
+      'username': 'a.user.username',
+      'profile': 'a.user.profileImage',
+      'reply': false
+          ? 'a.Rep'
+          : [
+              {
+                'user_id': 'a.userId',
+                'id': 'a.id',
+                'comment': 'a.postText',
+                'username': 'a.user.username',
+                'profile': 'a.user.profileImage',
+                'reply': []
+              }
+            ],
+      'replyCount': 'a.replyCount',
+      'replyLikeCount': 'a.replyLikeCount',
+      'myCommentLike': 'a.myCommentLike'
+    }
+  ];
+  var commentMapBreaker = {
+    'user_id': 'a.userId',
+    'id': 'a.id',
+    'comment': 'a.postText',
+    'username': 'a.user.username',
+    'profile': 'a.user.profileImage',
+    'reply': false
+        ? 'a.Rep'
+        : [
+            {
+              'user_id': 'a.userId',
+              'id': 'a.id',
+              'comment': 'a.postText',
+              'username': 'a.user.username',
+              'profile': 'a.user.profileImage'
+            }
+          ],
+    'replyCount': 'a.replyCount',
+    'replyLikeCount': 'a.replyLikeCount',
+    'myCommentLike': 'a.myCommentLike'
+  };
+  sendComment(
+    String? channelId,
+    videoId,
+    parentId,
+  ) {
+    comments.add(commentMapBreaker);
+  }
+}
