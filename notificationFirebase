@@ -111,3 +111,39 @@
     );
   }
   ///init close
+  
+  
+  ///big picture
+  Future<String> _downloadAndSaveFile(String url, String fileName) async {
+  final Directory directory = await getApplicationDocumentsDirectory();
+  final String filePath = '${directory.path}/$fileName';
+  final http.Response response = await http.get(Uri.parse(url));
+  final File file = File(filePath);
+  await file.writeAsBytes(response.bodyBytes);
+  return filePath;
+}
+
+Future<void> _showBigPictureNotification({url, name, title, body}) async {
+  final String largeIconPath = await _downloadAndSaveFile(url, 'largeIcon');
+  final String bigPicturePath = await _downloadAndSaveFile(url, 'bigPicture');
+  final BigPictureStyleInformation bigPictureStyleInformation =
+      BigPictureStyleInformation(FilePathAndroidBitmap(bigPicturePath),
+          largeIcon: FilePathAndroidBitmap(largeIconPath),
+          contentTitle: title,
+          htmlFormatContentTitle: true,
+          summaryText: body,
+          htmlFormatSummaryText: true);
+  final AndroidNotificationDetails androidNotificationDetails =
+      AndroidNotificationDetails(channel.id, channel.name,
+          channelDescription: channel.description,
+          icon: 'launch_background',
+          styleInformation: bigPictureStyleInformation);
+  final NotificationDetails notificationDetails =
+      NotificationDetails(android: androidNotificationDetails);
+  await flutterLocalNotificationsPlugin.show(
+    1,
+    title,
+    body,
+    notificationDetails,
+  );
+}
